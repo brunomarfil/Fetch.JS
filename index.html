@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Animais</title>
+    <style>
+        body {
+            background-color: #6a6a6a;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #74808b;
+            margin: 10px 0;
+            padding: 10px;/ border-radius: 5px;
+        }
+
+        button {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #55545e;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Animais Cadastrados</h1>
+    <button id="cadastrar-animal">Cadastrar Animal</button>
+    <ul id="animal-list"></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script>
+        const API_URL = 'https://6724bfdec39fedae05b297aa.mockapi.io/usuario/Animal';
+
+        // Função para carregar os animais do MockAPI
+
+        async function carregarAnimais() {
+            try {
+                const resposta = await axios.get(API_URL);
+                const lista = document.getElementById("animal-list");
+                lista.innerHTML = '';
+                resposta.data.forEach(animal => {
+                    const item = document.createElement("li");
+                    item.textContent = `${animal.id} - ${animal.nome} (${animal.idade} anos) – ${animal.raca}`;
+                    lista.appendChild(item);
+                });
+            } catch (erro) {
+                console.error("Erro ao carregar a lista de animais:", erro);
+            }
+        }
+
+        // Função para cadastrar um animal "Hardcoded"
+        
+        async function cadastrarAnimal() {
+            const animal = {
+                nome: "Billy",
+                idade: 10,
+                raca: "Cachorro - Beagle"
+            };
+            try {
+                await axios.post(API_URL, animal);
+                carregarAnimais(); // Atualiza a lista após cadastrar
+            } catch (erro) {
+                console.error("Erro ao cadastrar o animal:", erro);
+            }
+        }
+
+        window.onload = carregarAnimais;
+
+        document.getElementById("cadastrar-animal").addEventListener("click", cadastrarAnimal);
+    </script>
+</body>
+</html>
